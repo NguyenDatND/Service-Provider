@@ -1,15 +1,17 @@
-import { useParams } from "react-router-dom";
+import { RowsContext } from "../App";
+import { React, useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Button, Container } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { useNavigate } from "react-router-dom";
-import React from "react";
 
-export default function Del({ prop }) {
+export default function Del() {
+  const obj = useContext(RowsContext);
   const { index } = useParams();
-  console.log(index);
   const handleDel = () => {
-    // console.log("xin chao");
+    obj.b.splice(index, 1);
+    obj.a(obj.b);
+    navigate("/");
   };
   const navigate = useNavigate();
   return (

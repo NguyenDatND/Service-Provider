@@ -1,34 +1,24 @@
+import { RowsContext } from "../App";
+import { React, useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import SelectCountry from "./SelectCountry";
 import { Button, Container, TextField } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { Outlet, useNavigate } from "react-router-dom";
-import { useFormControl } from "@mui/material/FormControl";
-import { useFormik, withFormik } from "formik";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import React, { useState } from "react";
 
 export default function AddNew() {
+  const obj = useContext(RowsContext);
   const [Success, setSuccess] = useState(false);
   const navigate = useNavigate();
-  const handleSave = () => {
-    setSuccess(true);
-    setTimeout(() => {
-      navigate("/");
-    }, 2000);
+  const initialValues = {
+    Company_name: "",
+    Country: "",
   };
-  const formik = useFormik({
-    initialValues: {
-      Company_name: "",
-      Country: "",
-    },
-    validationSchema: Yup.object({
-      Company_name: Yup.string().required("Please enter Company Name."),
-      Country: Yup.string().required("Please select Country."),
-    }),
-    onSubmit: (values) => {
-      console.log("123");
-    },
+  const validationSchema = Yup.object({
+    Company_name: Yup.string().required("Please enter Company Name."),
+    Country: Yup.object().required("Please select Country."),
   });
   return (
     <div
@@ -45,7 +35,6 @@ export default function AddNew() {
         justifyContent: "center",
       }}
     >
-      {" "}
       <Container
         onClick={(e) => {
           e.stopPropagation();
@@ -60,63 +49,81 @@ export default function AddNew() {
             onClick={() => navigate("/")}
           />
         </p>
-        <form onSubmit={formik.handleSubmit}>
-          <div
-            style={{
-              padding: "0px 24px",
-              margin: "0 -24px",
-              borderTop: "1px solid #3333",
-              borderBottom: "1px solid #3333",
-            }}
-          >
-            <TextField
-              sx={{ width: 350 }}
-              error={
-                formik.touched.Company_name &&
-                Boolean(formik.errors.Company_name)
-              }
-              name="Company_name"
-              label="Company Name *"
-              helperText={
-                formik.touched.Company_name && formik.errors.Company_name
-              }
-              margin="normal"
-              size="small"
-              value={formik.values.Company_name}
-              onChange={formik.handleChange}
-            />
-            <SelectCountry />
-          </div>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={(values) => {
+            const newObj = {
+              Name: values.Company_name,
+              Country: values.Country.label,
+            };
+            obj.b = [newObj, ...obj.b];
+            obj.a(obj.b);
+            setSuccess(true);
+            setTimeout(() => {
+              navigate("/");
+            }, 1000);
+          }}
+        >
+          {(formik) => (
+            <Form>
+              <div
+                style={{
+                  padding: "0px 24px",
+                  margin: "0 -24px",
+                  borderTop: "1px solid #3333",
+                  borderBottom: "1px solid #3333",
+                }}
+              >
+                <TextField
+                  sx={{ width: 350 }}
+                  error={
+                    formik.touched.Company_name &&
+                    Boolean(formik.errors.Company_name)
+                  }
+                  name="Company_name"
+                  label="Company Name *"
+                  helperText={
+                    formik.touched.Company_name && formik.errors.Company_name
+                  }
+                  margin="normal"
+                  size="small"
+                  value={formik.values.Company_name}
+                  onChange={formik.handleChange}
+                />
+                <SelectCountry formik={formik} />
+              </div>
 
-          <div style={{ padding: "15px 0" }}>
-            <Button
-              variant="contained"
-              onClick={(e) => navigate("/")}
-              style={{
-                color: "#1b3e67",
-                fontWeight: "750",
-                backgroundImage: "linear-gradient(0, #ded9d9, #fff)",
-                textTransform: "capitalize ",
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              // onClick={handleSave}
-              variant="contained"
-              type="submit"
-              style={{
-                color: "#fff",
-                fontWeight: "750",
-                backgroundColor: "#1dc485",
-                textTransform: "capitalize ",
-                float: "right",
-              }}
-            >
-              Save
-            </Button>
-          </div>
-        </form>
+              <div style={{ padding: "15px 0" }}>
+                <Button
+                  variant="contained"
+                  onClick={(e) => navigate("/")}
+                  style={{
+                    color: "#1b3e67",
+                    fontWeight: "750",
+                    backgroundImage: "linear-gradient(0, #ded9d9, #fff)",
+                    textTransform: "capitalize ",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="contained"
+                  type="submit"
+                  style={{
+                    color: "#fff",
+                    fontWeight: "750",
+                    backgroundColor: "#1dc485",
+                    textTransform: "capitalize ",
+                    float: "right",
+                  }}
+                >
+                  Save
+                </Button>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </Container>
       {Success && (
         <div

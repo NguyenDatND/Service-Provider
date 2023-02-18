@@ -2,13 +2,14 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-export default function SelectCountry({}) {
+export default function SelectCountry({ formik }) {
   return (
     <Autocomplete
       sx={{ width: 350 }}
       options={countries}
       autoHighlight
       getOptionLabel={(option) => (option.label ? option.label : "")}
+      onChange={(_event, value) => formik.setFieldValue("Country", value)}
       renderOption={(props, option) => (
         <Box
           component="li"
@@ -22,17 +23,17 @@ export default function SelectCountry({}) {
         <TextField
           {...params}
           name="Country"
-          // error={formik.touched.Country && Boolean(formik.errors.Country)}
+          error={formik.touched.Country && Boolean(formik.errors.Country)}
           label="Country *"
           margin="normal"
           size="small"
           placeholder="Select country"
-          // helperText={formik.touched.Country && formik.errors.Country}
+          helperText={formik.touched.Country && formik.errors.Country}
           inputProps={{
             ...params.inputProps,
             autoComplete: "new-password", // disable autocomplete and autofill
           }}
-          // value={formik.values.Country}
+          value={formik.values.Country}
         />
       )}
     />

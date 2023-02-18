@@ -1,12 +1,8 @@
-import Del from "./Elements/Del";
 import { Link, Outlet } from "react-router-dom";
-import Edit from "./Elements/Edit";
 import Add from "./Elements/AddButton";
 import * as React from "react";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -19,6 +15,7 @@ import Paper from "@mui/material/Paper";
 import { visuallyHidden } from "@mui/utils";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
+import { createContext } from "react";
 
 function createData(Name, Country, Actions) {
   return {
@@ -32,16 +29,16 @@ const rows = [
   createData("Facebook", "US"),
   createData("Google", "US"),
   createData("Tesla", "US"),
-  createData("Baidu", "China"),
-  createData("Apple", "US"),
-  createData("Rolex", "Switzerland"),
-  createData("Tencent", "China"),
-  createData("Microsoft", "US"),
-  createData("BMW", "Germany"),
-  createData("IBM", "US"),
-  createData("Gojek", "Indonesia"),
-  createData("Viettel", "VietNam"),
-  createData("FPT", "VietNam"),
+  // createData("Baidu", "China"),
+  // createData("Apple", "US"),
+  // createData("Rolex", "Switzerland"),
+  // createData("Tencent", "China"),
+  // createData("Microsoft", "US"),
+  // createData("BMW", "Germany"),
+  // createData("IBM", "US"),
+  // createData("Gojek", "Indonesia"),
+  // createData("Viettel", "VietNam"),
+  // createData("FPT", "VietNam"),
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -127,6 +124,9 @@ EnhancedTableHead.propTypes = {
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
 };
+
+export const RowsContext = createContext();
+
 export default function App() {
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("Country");
@@ -149,76 +149,84 @@ export default function App() {
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
+  const [Rows, setRowws] = React.useState(rows);
+  const handleRows = (rows) => {
+    setRowws(rows);
+  };
+  const abc = {
+    a: handleRows,
+    b: stableSort(Rows, getComparator(order, orderBy)),
+  };
+  console.log(Rows);
   return (
-    <Box sx={{ width: "95%", margin: "60px auto", position: "relative" }}>
-      <Add prop={rows} />
-      <Paper sx={{ width: "100%", mb: 2 }}>
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-            size={"small"}
-          >
-            <EnhancedTableHead
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  return (
-                    <TableRow key={row.Name}>
-                      <TableCell component="th" scope="row" padding="normal">
-                        {row.Name}
-                      </TableCell>
-                      <TableCell>{row.Country}</TableCell>
-                      <TableCell>
-                        <span>
-                          <Link
-                            style={{ color: "#6cf5bb", cursor: "pointer" }}
-                            to={`/Edit/${index}`}
-                            element={<Edit prop={index} />}
-                          >
-                            <EditIcon />
-                          </Link>
-                        </span>
-                        {"  "}
-                        <span>
-                          <Link
-                            style={{ color: "red", cursor: "pointer" }}
-                            to={`/Del/${index}`}
-                            element={<Del prop={index} />}
-                          >
-                            <DeleteForeverIcon />
-                          </Link>
-                        </span>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
-      <Outlet />
-    </Box>
+    <RowsContext.Provider value={abc}>
+      <Box sx={{ width: "95%", margin: "60px auto", position: "relative" }}>
+        <Add />
+        <Paper sx={{ width: "100%", mb: 2 }}>
+          <TableContainer>
+            <Table
+              sx={{ minWidth: 750 }}
+              aria-labelledby="tableTitle"
+              size={"small"}
+            >
+              <EnhancedTableHead
+                order={order}
+                orderBy={orderBy}
+                onRequestSort={handleRequestSort}
+                rowCount={Rows.length}
+              />
+              <TableBody>
+                {stableSort(Rows, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    return (
+                      <TableRow key={index}>
+                        <TableCell component="th" scope="row" padding="normal">
+                          {row.Name}
+                        </TableCell>
+                        <TableCell>{row.Country}</TableCell>
+                        <TableCell>
+                          <span>
+                            <Link
+                              style={{ color: "#6cf5bb", cursor: "pointer" }}
+                              to={`/Edit/${index}`}
+                            >
+                              <EditIcon />
+                            </Link>
+                          </span>
+                          {"  "}
+                          <span>
+                            <Link
+                              style={{ color: "red", cursor: "pointer" }}
+                              to={`/Del/${index}`}
+                            >
+                              <DeleteForeverIcon />
+                            </Link>
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                {emptyRows > 0 && (
+                  <TableRow>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={Rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
+        <Outlet />
+      </Box>
+    </RowsContext.Provider>
   );
 }

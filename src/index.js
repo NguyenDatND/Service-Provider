@@ -7,17 +7,13 @@ import Del from "./Elements/Del";
 import Edit from "./Elements/Edit";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { Route, Routes, Link, Outlet } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     {/* <React.StrictMode> */}
     <Routes>
-      {/* <Route path="/" element={<App />} />
-        <Route path="/AddNew" element={<AddNew />} />
-        <Route path="/Del/:id" element={<Del />} />
-        <Route path="/Edit/:id" element={<Edit />} />{" "} */}
       <Route path="/" element={<App />}>
         <Route path="/AddNew" element={<AddNew />} />
         <Route path="/Del/:index" element={<Del />} />

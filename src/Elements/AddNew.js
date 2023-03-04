@@ -9,7 +9,7 @@ import * as Yup from "yup";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 
 export default function AddNew() {
-  const obj = useContext(RowsContext);
+  const func = useContext(RowsContext);
   const [Success, setSuccess] = useState(false);
   const navigate = useNavigate();
   const initialValues = {
@@ -53,12 +53,21 @@ export default function AddNew() {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            const newObj = {
+            const newData = {
+              id: 0,
               Name: values.Company_name,
               Country: values.Country.label,
+              code: values.Country.code,
             };
-            obj.b = [newObj, ...obj.b];
-            obj.a(obj.b);
+
+            const newArray = func.DataRows.map((row, index) => {
+              return {
+                ...row,
+                id: index + 1,
+              };
+            });
+            func.DataRows = [newData, ...newArray];
+            func.funcHandleRows(func.DataRows);
             setSuccess(true);
             setTimeout(() => {
               navigate("/");

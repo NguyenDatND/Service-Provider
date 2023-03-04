@@ -8,8 +8,16 @@ export default function SelectCountry({ formik }) {
       sx={{ width: 350 }}
       options={countries}
       autoHighlight
-      getOptionLabel={(option) => (option.label ? option.label : "")}
-      onChange={(_event, value) => formik.setFieldValue("Country", value)}
+      value={formik.values.Country}
+      isOptionEqualToValue={React.useCallback(
+        (option, value) => option.value === value.value
+      )}
+      getOptionLabel={(option) =>
+        option.label ? option.label : `${formik.values.Country}`
+      }
+      onChange={(_event, value) => {
+        formik.setFieldValue("Country", value);
+      }}
       renderOption={(props, option) => (
         <Box
           component="li"
@@ -33,14 +41,13 @@ export default function SelectCountry({ formik }) {
             ...params.inputProps,
             autoComplete: "new-password", // disable autocomplete and autofill
           }}
-          value={formik.values.Country}
         />
       )}
     />
   );
 }
 
-const countries = [
+export const countries = [
   { code: "AD", label: "Andorra", phone: "376" },
   {
     code: "AE",

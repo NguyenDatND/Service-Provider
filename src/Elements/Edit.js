@@ -9,13 +9,13 @@ import * as Yup from "yup";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 
 export default function Edit() {
-  const obj = useContext(RowsContext);
+  const func = useContext(RowsContext);
   const { index } = useParams();
   const [Success, setSuccess] = useState(false);
   const navigate = useNavigate();
   const initialValues = {
-    Company_name: "",
-    Country: "",
+    Company_name: `${func.DataRows[index].Name}`,
+    Country: `${func.DataRows[index].Country}`,
   };
   const validationSchema = Yup.object({
     Company_name: Yup.string().required("Please enter Company Name."),
@@ -54,15 +54,18 @@ export default function Edit() {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            obj.b[index] = {
+            const copyArray = [...func.DataRows];
+            copyArray[index] = {
+              id: Number(index),
               Name: values.Company_name,
               Country: values.Country.label,
+              code: values.Country.code,
             };
-            obj.a(obj.b);
+            func.funcHandleRows(copyArray);
             setSuccess(true);
-            // setTimeout(() => {
-            //   navigate("/");
-            // }, 2000);
+            setTimeout(() => {
+              navigate("/");
+            }, 2000);
           }}
         >
           {(formik) => (

@@ -5,7 +5,7 @@ export default function Add() {
   return (
     <Link to="/AddNew">
       <Button
-        style={{
+        sx={{
           position: "absolute",
           backgroundColor: "#004683",
           right: "0",

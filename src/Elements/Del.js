@@ -6,11 +6,22 @@ import CloseIcon from "@mui/icons-material/Close";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 export default function Del() {
-  const obj = useContext(RowsContext);
+  const func = useContext(RowsContext);
   const { index } = useParams();
+
   const handleDel = () => {
-    obj.b.splice(index, 1);
-    obj.a(obj.b);
+    const copyArray = [...func.DataRows];
+    copyArray.splice(index, 1);
+    const newArray = copyArray.map((row, Index) => {
+      if (Index >= index) {
+        return {
+          ...row,
+          id: row.id - 1,
+        };
+      }
+      return row;
+    });
+    func.funcHandleRows(newArray);
     navigate("/");
   };
   const navigate = useNavigate();

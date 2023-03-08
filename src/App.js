@@ -1,21 +1,22 @@
+import DialogForm from "./Elements/Dialog_Form";
 import { Link, Outlet } from "react-router-dom";
-import Add from "./Elements/AddButton";
 import * as React from "react";
-// import { countries } from "./Elements/SelectCountry";
+import Button from "@mui/material/Button";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
 import { Box } from "@mui/system";
 import { createContext } from "react";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 
-export const RowsContext = createContext();
+export const rowsContext = createContext();
+
 var index = 0;
-function createData(id, Name, Country, code) {
+function createData(id, name, country, code) {
   index += 1;
   return {
     id,
-    Name,
-    Country,
+    name,
+    country,
     code,
   };
 }
@@ -39,27 +40,30 @@ const initialRows = [
 
 export default function ColumnTypesGrid() {
   const [pageSize, setPageSize] = React.useState(5);
-  const [DataRows, setRowwsApp] = React.useState(initialRows);
+  const [dataRows, setRowwsApp] = React.useState(initialRows);
+
   const handleRows = (rows) => {
     setRowwsApp(rows);
   };
+
   const funContext = {
     funcHandleRows: handleRows,
-    DataRows: DataRows,
+    dataRows: dataRows,
   };
+
   const columns = React.useMemo(
     () => [
       {
-        field: "Name",
+        field: "name",
         headerName: "Name of the company",
         type: "string",
-        headerClassName: "bold-text",
+        headerClassName: "border_none",
         flex: 1,
       },
       {
-        field: "Country",
+        field: "country",
         headerName: "Country",
-        headerClassName: "bold-text",
+        headerClassName: "border_none",
         type: "string",
         flex: 0.5,
       },
@@ -67,18 +71,18 @@ export default function ColumnTypesGrid() {
         field: "actions",
         headerName: "Actions",
         type: "actions",
-        headerClassName: "bold-text",
+        headerClassName: "border_none",
         flex: 0.5,
         getActions: (params) => [
           <GridActionsCellItem
             component={Link}
-            to={`/Edit/${params.id}`}
+            to={`/serviceProviderEdit/${params.id}`}
             icon={<EditIcon sx={{ color: "#6cf5bb" }} />}
             label="Edit"
           />,
           <GridActionsCellItem
             component={Link}
-            to={`/Del/${params.id}`}
+            to={`/serviceProviderDel/${params.id}`}
             icon={<DeleteForeverIcon sx={{ color: "red" }} />}
             label="Delete"
           />,
@@ -89,21 +93,32 @@ export default function ColumnTypesGrid() {
   );
 
   return (
-    <RowsContext.Provider value={funContext}>
+    <rowsContext.Provider value={funContext}>
       <Box
         sx={{
           width: "95%",
-          margin: "60px auto",
-          position: "relative",
-          "& .bold-text > .MuiDataGrid-columnSeparator": {
+          margin: "30px auto",
+          "& .border_none > .MuiDataGrid-columnSeparator": {
             display: "none",
           },
-          "& .bold-text > .MuiDataGrid-columnHeaderTitle": {
+          "& .MuiDataGrid-columnHeaderTitle": {
             fontWeight: "bold",
           },
         }}
       >
-        <Add />
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "end",
+            margin: "10px auto",
+          }}
+        >
+          <Link style={{ textDecoration: "none" }} to="/serviceProviderAdd">
+            <Button sx={{ background: "#004683" }} variant="contained">
+              + Add New
+            </Button>
+          </Link>
+        </Box>
         <DataGrid
           pageSize={pageSize}
           onPageSizeChange={(e) => setPageSize(e)}
@@ -112,10 +127,10 @@ export default function ColumnTypesGrid() {
           disableSelectionOnClick={true}
           disableColumnMenu={true}
           columns={columns}
-          rows={DataRows}
+          rows={dataRows}
         />
         <Outlet />
       </Box>
-    </RowsContext.Provider>
+    </rowsContext.Provider>
   );
 }

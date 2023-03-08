@@ -8,15 +8,15 @@ export default function SelectCountry({ formik }) {
       sx={{ width: 350 }}
       options={countries}
       autoHighlight
-      value={formik.values.Country}
+      value={formik.values.country_name}
       isOptionEqualToValue={React.useCallback(
         (option, value) => option.value === value.value
       )}
       getOptionLabel={(option) =>
-        option.label ? option.label : `${formik.values.Country}`
+        option.label ? option.label : `${formik.values.country_name}`
       }
       onChange={(_event, value) => {
-        formik.setFieldValue("Country", value);
+        formik.setFieldValue("country_name", value);
       }}
       renderOption={(props, option) => (
         <Box
@@ -30,16 +30,18 @@ export default function SelectCountry({ formik }) {
       renderInput={(params) => (
         <TextField
           {...params}
-          name="Country"
-          error={formik.touched.Country && Boolean(formik.errors.Country)}
-          label="Country *"
+          name="country_name"
+          error={
+            formik.touched.country_name && Boolean(formik.errors.country_name)
+          }
+          label="Country name *"
           margin="normal"
           size="small"
           placeholder="Select country"
-          helperText={formik.touched.Country && formik.errors.Country}
+          helperText={formik.touched.country_name && formik.errors.country_name}
           inputProps={{
             ...params.inputProps,
-            autoComplete: "new-password", // disable autocomplete and autofill
+            autoComplete: "new-password",
           }}
         />
       )}

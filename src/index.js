@@ -2,9 +2,10 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import "./index.css";
-import AddNew from "./Elements/AddNew";
-import Del from "./Elements/Del";
-import Edit from "./Elements/Edit";
+import DialogForm from "./Elements/Dialog_Form";
+import ServiceProviderAdd from "./Elements/ServiceProviderAdd";
+import ServiceProviderDel from "./Elements/ServiceProviderDel";
+import ServiceProviderEdit from "./Elements/ServiceProviderEdit";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Route, Routes } from "react-router-dom";
@@ -12,19 +13,19 @@ import { Route, Routes } from "react-router-dom";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
-    {/* <React.StrictMode> */}
     <Routes>
       <Route path="/" element={<App />}>
-        <Route path="/AddNew" element={<AddNew />} />
-        <Route path="/Del/:index" element={<Del />} />
-        <Route path="/Edit/:index" element={<Edit />} />{" "}
+        <Route path="/serviceProviderAdd" element={<ServiceProviderAdd />} />
+        <Route
+          path="/serviceProviderEdit/:index"
+          element={<ServiceProviderEdit />}
+        />
+        <Route
+          path="/serviceProviderDel/:index"
+          element={<ServiceProviderDel />}
+        />
       </Route>
     </Routes>
-    {/* </React.StrictMode> */}
   </BrowserRouter>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

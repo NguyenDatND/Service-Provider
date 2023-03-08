@@ -1,16 +1,23 @@
-import { RowsContext } from "../App";
-import { React, useContext } from "react";
+import { rowsContext } from "../App";
+import { React, useContext, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Container } from "@mui/material";
+import {
+  Button,
+  Container,
+  Dialog,
+  Typography,
+  Box,
+  Divider,
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
-export default function Del() {
-  const func = useContext(RowsContext);
+export default function serviceProviderDel() {
+  const func = useContext(rowsContext);
   const { index } = useParams();
 
   const handleDel = () => {
-    const copyArray = [...func.DataRows];
+    const copyArray = [...func.dataRows];
     copyArray.splice(index, 1);
     const newArray = copyArray.map((row, Index) => {
       if (Index >= index) {
@@ -24,54 +31,36 @@ export default function Del() {
     func.funcHandleRows(newArray);
     navigate("/");
   };
+
   const navigate = useNavigate();
   return (
-    <div
-      onClick={() => navigate("/")}
-      style={{
-        backgroundColor: "rgba(0,0,0,.3)",
-        position: "fixed",
-        top: "0",
-        right: "0",
-        left: "0",
-        bottom: "0",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Container
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-        maxWidth="sm"
-        style={{ backgroundColor: "white" }}
-      >
-        <h3 style={{ fontWeight: "bold", color: "#1b3e67" }}>
+    <Dialog open={true} fullWidth={true}>
+      <Container maxWidth="sm" sx={{ backgroundColor: "white" }}>
+        <Typography
+          variant="h6"
+          sx={{ padding: "10px 0px ", fontWeight: "bold", color: "#1b3e67" }}
+        >
           Delete Service Provider
           <CloseIcon
-            style={{ float: "right", fontSize: "18px", cursor: "pointer" }}
+            sx={{ float: "right", fontSize: "18px", cursor: "pointer" }}
             onClick={() => navigate("/")}
           />
-        </h3>
-        <div
-          style={{
-            padding: "0px 24px",
-            margin: "0 -24px",
-            borderTop: "1px solid #3333",
-            borderBottom: "1px solid #3333",
-          }}
-        >
-          <p style={{ fontWeight: "bold", color: "#333" }}>
+        </Typography>
+        <Divider />
+        <Box>
+          <Typography
+            variant="subtitle1"
+            sx={{ padding: "10px 0px ", fontWeight: "bold", color: "#333" }}
+          >
             Are you sure you want to delete this Service Provider?
-          </p>
-        </div>
-
-        <div style={{ padding: "15px 0" }}>
+          </Typography>
+        </Box>
+        <Divider />
+        <Box sx={{ padding: "15px 0" }}>
           <Button
             variant="contained"
             onClick={(e) => navigate("/")}
-            style={{
+            sx={{
               color: "#1b3e67",
               fontWeight: "750",
               backgroundImage: "linear-gradient(0, #ded9d9, #fff)",
@@ -94,7 +83,7 @@ export default function Del() {
           >
             <DeleteOutlineIcon
               fontSize="small"
-              style={{
+              sx={{
                 position: "absolute",
                 left: "12px",
                 top: "7px",
@@ -102,8 +91,8 @@ export default function Del() {
             />
             Delete
           </Button>
-        </div>
+        </Box>
       </Container>
-    </div>
+    </Dialog>
   );
 }
